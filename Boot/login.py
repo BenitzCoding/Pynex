@@ -1,9 +1,36 @@
+import os
+import sys
 import getpass
 import requests
 from yachalk import chalk
 from getmac import get_mac_address as gma
 
-print("""
+def get_command(command):
+	clear_command = {
+		"win32": "cls",
+		"linux": "clear"
+	}
+	pip_command = {
+		"win32": "pip",
+		"linux": "pip3"
+	}
+	python_command = {
+		"win32": "python",
+		"linux": "python3"
+	}
+	if command == "clear":
+		return clear_command[sys.platform]
+
+	elif command == "pip":
+		return pip_command[sys.platform]
+	
+	elif command == "python":
+		return python_command[sys.platform]
+	
+
+def clear():
+	os.system(get_command("clear"))
+	print("""
     ____                       
    / __ \__  ______  ___  _  __
   / /_/ / / / / __ \/ _ \| |/_/
@@ -11,6 +38,7 @@ print("""
 /_/    \__, /_/ /_/\___/_/|_|  
       /____/                   
 \n\n""")
+
 TRIES = []
 
 def login():
@@ -21,7 +49,7 @@ def login():
 
 		else:
 			TRIES.append("Failed")
-			print(chalk.bold.red("Invalid login, please try again."))
+			print(chalk.bold.red("Invalid login, please try again.\n"))
 		return login()
 	password = getpass.getpass('password: ')
 	response = requests.get(f"https://api.senarc.org/pynex/login/?username={username}&password={password}")
@@ -51,3 +79,25 @@ def signup():
 	if response.json() == {"success": True}:
 		print(chalk.bold.green("Your account has been registered successfully."))
 		return login()
+
+def options():
+	try:
+		option = int(input("""
+________________________
+|SIGN IN OR SIGN UP    |
+|                      |
+|[1]: SIGN IN          |
+|[2]: SIGN UP          |
+|______________________|
+\n\n> """))
+	except:
+		input(chalk.bold.red("Invalid Option." + "\n> "))
+		return options()
+	if option == 1:
+		return login()
+
+	elif option == 2:
+		return signup()
+
+clear()
+options()
