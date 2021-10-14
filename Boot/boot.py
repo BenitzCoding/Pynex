@@ -3,6 +3,7 @@ import sys
 import subprocess
 import progressbar
 from time import sleep
+from subprocess import run, PIPE, STDOUT
 
 def get_command(command):
 	clear_command = {
@@ -57,9 +58,19 @@ def boot():
       /____/                   
 \n\nInstalling Packages""")
 				for content in file.readlines():
-					os.system(f"nohup pip install {content} > output.log")
+					ps = run(get_command("pip") + f"install {content}", stdout=PIPE, stderr=STDOUT, shell=True, text=True)
 				with open('.installed', 'w') as f:
 					f.write('Pynex installed pypi packages.')
+				os.system(get_command("clear"))
+				print("""
+    ____                       
+   / __ \__  ______  ___  _  __
+  / /_/ / / / / __ \/ _ \| |/_/
+ / ____/ /_/ / / / /  __/>  <  
+/_/    \__, /_/ /_/\___/_/|_|  
+      /____/                   
+\n\nInstalled All Packages, Starting Pynex...""")
+				return os.system(get_command("python") + " ./Boot/login.py")
 
 clear()
 boot()
