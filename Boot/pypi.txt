@@ -1,0 +1,5 @@
+yachalk
+getmac
+getpass
+requests
+dnspython
