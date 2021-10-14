@@ -84,10 +84,10 @@ def options():
 	try:
 		option = int(input("""
 ________________________
-|SIGN IN OR SIGN UP    |
+|  SIGN IN OR SIGN UP  |
 |                      |
-|[1]: SIGN IN          |
-|[2]: SIGN UP          |
+|     [1]: SIGN IN     |
+|     [2]: SIGN UP     |
 |______________________|
 \n\n> """))
 	except:
