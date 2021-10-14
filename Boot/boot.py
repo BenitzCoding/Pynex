@@ -55,28 +55,9 @@ def boot():
  / ____/ /_/ / / / /  __/>  <  
 /_/    \__, /_/ /_/\___/_/|_|  
       /____/                   
-\n\n
-          0/{line_count} Done!
-{'_' * line_count}""")
+\n\nInstalling Packages""")
 				for content in file.readlines():
-					os.system(f"nohup pip isntall {content} > output.log")
-					bar = progressbar.ProgressBar(maxval=line_count, \
-					widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
-					bar.start()
-					for i in range(line_count):
-						bar.update(i+1)
-						sleep(0.1)
-						done_count = done_count + 1
-						os.system(get_command("clear"))
-						print(f"""
-    ____                       
-   / __ \__  ______  ___  _  __
-  / /_/ / / / / __ \/ _ \| |/_/
- / ____/ /_/ / / / /  __/>  <  
-/_/    \__, /_/ /_/\___/_/|_|  
-      /____/                   
-\n\n""")
-					bar.finish()
+					os.system(f"nohup pip install {content} > output.log")
 				with open('.installed', 'w') as f:
 					f.write('Pynex installed pypi packages.')
 
