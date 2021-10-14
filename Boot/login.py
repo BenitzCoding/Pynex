@@ -70,17 +70,18 @@ def signup():
 	if len(username) <= 3:
 		print(chalk.bold.red("\nYour username can't be less than 3 charecters, please re-enter a different username."))
 		return signup()
-	validate_username = requests.get(f"https://api.senarc.org/pynex/validate/?username={username}")
-	if validate_username == None:
+	try:
+		validate_username = requests.get(f"https://api.senarc.org/pynex/validate/?username={username}")
+		if validate_username.json() == {"TAKEN": True}:
+			print(chalk.bold.red("\nThis username is taken, please enter a different username."))
+			return signup
+		password = getpass.getpass('password: ')
+		response = requests.get(f"https://api.senarc.org/pynex/register/?username={username}&password={password}&address={gma()}")
+		if response.json() == {"success": True}:
+			print(chalk.bold.green("Your account has been registered successfully."))
+			return login()
+	except:
 		return print(chalk.bold.red("\nThe API to manage accounts is currently down, please try again later."))
-	if validate_username.json() == {"TAKEN": True}:
-		print(chalk.bold.red("\nThis username is taken, please enter a different username."))
-		return signup
-	password = getpass.getpass('password: ')
-	response = requests.get(f"https://api.senarc.org/pynex/register/?username={username}&password={password}&address={gma()}")
-	if response.json() == {"success": True}:
-		print(chalk.bold.green("Your account has been registered successfully."))
-		return login()
 
 def options():
 	try:
