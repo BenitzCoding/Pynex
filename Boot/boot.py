@@ -1,6 +1,16 @@
 import os
+import sys
 
-print("""
+def get_clear_command():
+	clear_command = {
+		"win32": "cls",
+		"linux": "clear"
+	}
+	return clear_command[sys.platform]
+
+def clear():
+	os.system(get_clear_command())
+	print("""
     ____                       
    / __ \__  ______  ___  _  __
   / /_/ / / / / __ \/ _ \| |/_/
@@ -15,7 +25,7 @@ def boot():
 
 	else:
 		done_count = 0
-		file = open("pypi.txt", "r")
+		file = open("./pypi.txt", "r")
 		line_count = 0
 		for line in file:
 			if line != "\n":
@@ -24,7 +34,7 @@ def boot():
 		for content in file.readlines():
 			os.spawnl(os.P_DETACH, f'pip install {content}')
 			done_count = done_count + 1
-			os.system("clear")
+			os.system(get_clear_command())
 			print(f"""
     ____                       
    / __ \__  ______  ___  _  __
@@ -38,4 +48,5 @@ def boot():
 		with open('.installed', 'w') as f:
 			f.write('Pynex installed pypi packages.')
 
+clear()
 boot()
