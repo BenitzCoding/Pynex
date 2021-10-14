@@ -47,7 +47,7 @@ def clear():
 
 def boot():
 	if os.path.isfile('.installed'):
-		return os.system(get_command("python") + " ./Boot/login.py")
+		return os.system(get_command("python") + f" {boot_dir()}/login.py")
 
 	else:
 		done_count = 0
