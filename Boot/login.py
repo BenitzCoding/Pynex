@@ -69,8 +69,10 @@ def signup():
 	username = input("username: ")
 	if len(username) <= 3:
 		print(chalk.bold.red("\nYour username can't be less than 3 charecters, please re-enter a different username."))
-		return signup
+		return signup()
 	validate_username = requests.get(f"https://api.senarc.org/pynex/validate/?username={username}")
+	if validate_username == None:
+		return print(chalk.bold.red("\nThe API to manage accounts is currently down, please try again later."))
 	if validate_username.json() == {"TAKEN": True}:
 		print(chalk.bold.red("\nThis username is taken, please enter a different username."))
 		return signup
