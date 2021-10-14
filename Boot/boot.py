@@ -5,6 +5,12 @@ import progressbar
 from time import sleep
 from subprocess import run, PIPE, STDOUT
 
+def boot_dir():
+	if os.getcwd().endswith("Boot"):
+		return os.getcwd()
+	else:
+		return os.getcwd() + "/Boot"
+
 def get_command(command):
 	clear_command = {
 		"win32": "cls",
@@ -45,7 +51,7 @@ def boot():
 
 	else:
 		done_count = 0
-		with open(os.getcwd() + "/Boot/pypi.txt", 'r') as file:
+		with open(boot_dir() + "/pypi.txt", 'r') as file:
 			line_count = 0
 			for line in file:
 				line_count += 1
