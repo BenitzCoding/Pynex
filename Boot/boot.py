@@ -44,7 +44,7 @@ def boot():
 
 	else:
 		done_count = 0
-		with open(os.getcwd() + "\Boot\pypi.txt", 'r') as file:
+		with open(os.getcwd() + "/Boot/pypi.txt", 'r') as file:
 			line_count = 0
 			for line in file:
 				line_count += 1
