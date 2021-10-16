@@ -99,7 +99,7 @@ def login():
 		return login()
 	password = getpass.getpass('password: ')
 	response = requests.get(f"https://api.senarc.org/pynex/login/{username}/{password}/{gma()}")
-	if response == { "success": True, "address": gma() }:
+	if response.json() == { "success": True, "address": gma() }:
 		print(chalk.bold.green(f"You are now logged in as \"{chalk.bold.blue(username)}\""))
 		return
 	else:
