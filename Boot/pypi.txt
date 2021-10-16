@@ -3,3 +3,4 @@ getmac
 requests
 dnspython
 psutil
+click

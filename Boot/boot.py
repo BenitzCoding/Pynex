@@ -8,8 +8,10 @@ from subprocess import run, PIPE, STDOUT
 def boot_dir():
 	if os.getcwd().endswith("Boot"):
 		return os.getcwd()
-	else:
+	elif os.getcwd().endswith("Pynex"):
 		return os.getcwd() + "/Boot"
+	else:
+		raise RuntimeError("Invalid Directory Launch. Code: E01")
 
 def get_command(command):
 	clear_command = {

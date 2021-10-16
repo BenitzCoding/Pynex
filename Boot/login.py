@@ -52,7 +52,7 @@ def login():
 			print(chalk.bold.red("Invalid login, please try again.\n"))
 		return login()
 	password = getpass.getpass('password: ')
-	response = requests.get(f"https://api.senarc.org/pynex/login/?username={username}&password={password}")
+	response = requests.get(f"https://api.senarc.org/pynex/login?username={username}&password={password}&mac_address={gma()}")
 	if response == { "success": True, "address": gma() }:
 		print(chalk.bold.green(f"You are now logged in as \"{chalk.bold.blue(username)}\""))
 		return
@@ -76,7 +76,11 @@ def signup():
 			print(chalk.bold.red("\nThis username is taken, please enter a different username."))
 			return signup
 		password = getpass.getpass('password: ')
-		response = requests.get(f"https://api.senarc.org/pynex/register/?username={username}&password={password}&address={gma()}")
+		confirm_password = getpass.getpass('confirm password: ')
+		if password != confirm_password:
+			input("Those password don't match, please re-enter.\n[PRESS ENTER TO CONTINUE]\n> ")
+			return signup()
+		response = requests.get(f"https://api.senarc.org/pynex/register/?username={username}&password={password}&mac_address={gma()}")
 		if response.json() == {"success": True}:
 			print(chalk.bold.green("Your account has been registered successfully."))
 			return login()
