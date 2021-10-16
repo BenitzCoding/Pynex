@@ -5,7 +5,7 @@ import requests
 from yachalk import chalk
 from getmac import get_mac_address as gma
 
-ALLOWED_CHARECTERS = [
+ALLOWED_CHARACTERS = [
 	'a',
 	'b',
 	'c',
@@ -115,8 +115,8 @@ def signup():
 	elif len(username) >= 16:
 		print(chalk.bold.red("\nYour username can't be more than 16 characters, please re-enter a different username."))
 		return signup()
-	for charecter in list(username):
-		if charecter in ALLOWED_CHARECTERS:
+	for character in list(username):
+		if character in ALLOWED_CHARACTERS:
 			continue
 		else:
 			print(chalk.bold.red("\nYour username should only consist ASCII Text."))
