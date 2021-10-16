@@ -5,6 +5,48 @@ import requests
 from yachalk import chalk
 from getmac import get_mac_address as gma
 
+ALLOWED_CHARECTERS = [
+	'a',
+	'b',
+	'c',
+	'd',
+	'e',
+	'f',
+	'g',
+	'h',
+	'i',
+	'j',
+	'k',
+	'l',
+	'm',
+	'n',
+	'o',
+	'p',
+	'q',
+	'r',
+	's',
+	't',
+	'u',
+	'v',
+	'w',
+	'x',
+	'y',
+	'z',
+	'0',
+	'1',
+	'2',
+	'3',
+	'4',
+	'5',
+	'6',
+	'7',
+	'8',
+	'9',
+	'.',
+	'-',
+	'_'
+]
+
 def get_command(command):
 	clear_command = {
 		"win32": "cls",
@@ -68,8 +110,17 @@ def login():
 def signup():
 	username = input("username: ")
 	if len(username) <= 3:
-		print(chalk.bold.red("\nYour username can't be less than 3 charecters, please re-enter a different username."))
+		print(chalk.bold.red("\nYour username can't be less than 3 characters, please re-enter a different username."))
 		return signup()
+	elif len(username) >= 16:
+		print(chalk.bold.red("\nYour username can't be more than 16 characters, please re-enter a different username."))
+		return signup()
+	for charecter in list(username):
+		if charecter in ALLOWED_CHARECTERS:
+			continue
+		else:
+			print(chalk.bold.red("\nYour username should only consist ASCII Text."))
+			return signup()
 	try:
 		validate_username = requests.get(f"https://api.senarc.org/pynex/validate/?username={username}")
 		if validate_username.json() == {"TAKEN": True}:
@@ -78,7 +129,7 @@ def signup():
 		password = getpass.getpass('password: ')
 		confirm_password = getpass.getpass('confirm password: ')
 		if password != confirm_password:
-			input("Those password don't match, please re-enter.\n[PRESS ENTER TO CONTINUE]\n> ")
+			print(chalk.bold.green("Those password don't match, please re-enter."))
 			return signup()
 		response = requests.get(f"https://api.senarc.org/pynex/register/?username={username}&password={password}&mac_address={gma()}")
 		if response.json() == {"success": True}:
