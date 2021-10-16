@@ -47,6 +47,10 @@ ALLOWED_CHARACTERS = [
 	'_'
 ]
 
+def lockout():
+	print(chalk.bold.red("Session ended because of too many failed login attempts."))
+	return sys.exit()
+
 def get_command(command):
 	clear_command = {
 		"win32": "cls",
@@ -94,7 +98,7 @@ def login():
 			print(chalk.bold.red("Invalid login, please try again.\n"))
 		return login()
 	password = getpass.getpass('password: ')
-	response = requests.get(f"https://api.senarc.org/pynex/login?username={username}&password={password}&mac_address={gma()}")
+	response = requests.get(f"https://api.senarc.org/pynex/login/{username}/{password}/{gma()}")
 	if response == { "success": True, "address": gma() }:
 		print(chalk.bold.green(f"You are now logged in as \"{chalk.bold.blue(username)}\""))
 		return
@@ -122,7 +126,7 @@ def signup():
 			print(chalk.bold.red("\nYour username should only consist ASCII Text."))
 			return signup()
 	try:
-		validate_username = requests.get(f"https://api.senarc.org/pynex/validate/?username={username}")
+		validate_username = requests.get(f"https://api.senarc.org/pynex/validate/{username}")
 		if validate_username.json() == {"TAKEN": True}:
 			print(chalk.bold.red("\nThis username is taken, please enter a different username."))
 			return signup
@@ -131,31 +135,38 @@ def signup():
 		if password != confirm_password:
 			print(chalk.bold.green("Those password don't match, please re-enter."))
 			return signup()
-		response = requests.get(f"https://api.senarc.org/pynex/register/?username={username}&password={password}&mac_address={gma()}")
+		response = requests.get(f"https://api.senarc.org/pynex/register/{username}/{password}/{gma()}")
 		if response.json() == {"success": True}:
 			print(chalk.bold.green("Your account has been registered successfully."))
 			return login()
 	except:
 		return print(chalk.bold.red("\nThe API to manage accounts is currently down, please try again later."))
 
-def options():
+def options(i=None):
 	try:
-		option = int(input("""
+		if i != None:
+			option = input("> ")
+		else:
+			option = input("""
 ________________________
 |  SIGN IN OR SIGN UP  |
 |                      |
 |     [1]: SIGN IN     |
 |     [2]: SIGN UP     |
 |______________________|
-\n\n> """))
+\n\n> """)
 	except:
-		input(chalk.bold.red("Invalid Option." + "\n> "))
-		return options()
-	if option == 1:
+		print(chalk.bold.red("Invalid Option."))
+		return options("i")
+	if option == "1":
 		return login()
 
-	elif option == 2:
+	elif option == "2":
 		return signup()
+
+	else:
+		print(chalk.bold.red("Invalid Option."))
+		return options("i")
 
 clear()
 options()
