@@ -2,6 +2,7 @@ import os
 import sys
 import getpass
 import requests
+from utils import get_data, register_value
 from yachalk import chalk
 from getmac import get_mac_address as gma
 
@@ -92,7 +93,7 @@ def login():
 	if len(username) <= 3:
 		if len(TRIES) >= 5:
 			return lockout()
-
+			
 		else:
 			TRIES.append("Failed")
 			print(chalk.bold.red("Invalid login, please try again.\n"))
@@ -100,8 +101,17 @@ def login():
 	password = getpass.getpass('password: ')
 	response = requests.get(f"https://api.senarc.org/pynex/login/{username}/{password}/{gma()}")
 	if response.json() == { "success": True, "address": gma() }:
-		print(chalk.bold.green(f"You are now logged in as \"{chalk.bold.blue(username)}\""))
-		return
+		if get_data('path') != None:
+			path = get_data('path') + f"/User/{username}"
+			if os.path.isdir(path) != True:
+				os.system(f"cd {get_data('path')}/User && mkdir {username}")
+			print(chalk.bold.green(f"You are now logged in as \"{chalk.bold.blue(username)}\""))
+			register_value(variable='username', value=username)
+			os.system(f"cd {get_data('path')}/System")
+			return os.system(f"{get_command('python')} System/main.py")
+		else:
+			print(chalk.bold.red(f"You haven't went through the setup correctly or some errors has occured."))
+			return sys.exit()
 	else:
 		if len(TRIES) >= 5:
 			return lockout()
@@ -137,17 +147,17 @@ def signup():
 			return signup()
 		response = requests.get(f"https://api.senarc.org/pynex/register/{username}/{password}/{gma()}")
 		if response.json() == {"success": True}:
+			os.system(f"mkdir {get_data('path')}/User/{username}")
 			print(chalk.bold.green("Your account has been registered successfully."))
 			return login()
 	except:
 		return print(chalk.bold.red("\nThe API to manage accounts is currently down, please try again later."))
 
 def options(i=None):
-	try:
-		if i != None:
-			option = input("> ")
-		else:
-			option = input("""
+	if i != None:
+		option = input("> ")
+	else:
+		option = input("""
 ________________________
 |  SIGN IN OR SIGN UP  |
 |                      |
@@ -155,9 +165,6 @@ ________________________
 |     [2]: SIGN UP     |
 |______________________|
 \n\n> """)
-	except:
-		print(chalk.bold.red("Invalid Option."))
-		return options("i")
 	if option == "1":
 		return login()
 

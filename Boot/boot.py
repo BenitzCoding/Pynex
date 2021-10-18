@@ -1,17 +1,8 @@
 import os
 import sys
-import subprocess
-import progressbar
+from utils import get_data, register_value
 from time import sleep
 from subprocess import run, PIPE, STDOUT
-
-def boot_dir():
-	if os.getcwd().endswith("Boot"):
-		return os.getcwd()
-	elif os.getcwd().endswith("Pynex"):
-		return os.getcwd() + "/Boot"
-	else:
-		raise RuntimeError("Invalid Directory Launch. Code: E01")
 
 def get_command(command):
 	clear_command = {
@@ -48,37 +39,50 @@ def clear():
 \n\n""")
 
 def boot():
-	if os.path.isfile('.installed'):
-		return os.system(get_command("python") + f" {boot_dir()}/login.py")
-
-	else:
-		done_count = 0
-		with open(boot_dir() + "/pypi.txt", 'r') as file:
-			line_count = 0
-			for line in file:
-				line_count += 1
-				print(f"""
+	try:
+		return os.system(get_command("python") + f" {get_data('path')}/Boot/login.py")
+	except:
+		try:
+			os.system(get_command("clear"))
+			path = repr(input(f"""
     ____                       
    / __ \__  ______  ___  _  __
   / /_/ / / / / __ \/ _ \| |/_/
  / ____/ /_/ / / / /  __/>  <  
 /_/    \__, /_/ /_/\___/_/|_|  
       /____/                   
-\n\nInstalling Packages""")
-				for content in file.readlines():
-					ps = run(get_command("pip") + f"install {content}", stdout=PIPE, stderr=STDOUT, shell=True, text=True)
-				with open('.installed', 'w') as f:
-					f.write('Pynex installed pypi packages.')
-				os.system(get_command("clear"))
-				print("""
+\n\nWhere is Pynex Folder (ex. "/root/Pynex")? """)).strip("'").replace("\\\\", "/")
+			register_value(variable="path", value=path)
+			done_count = 0
+			with open(path + "/Boot/pypi.txt", 'r') as file:
+				line_count = 0
+				for line in file:
+					line_count += 1
+					print(f"""
     ____                       
    / __ \__  ______  ___  _  __
   / /_/ / / / / __ \/ _ \| |/_/
  / ____/ /_/ / / / /  __/>  <  
 /_/    \__, /_/ /_/\___/_/|_|  
       /____/                   
-\n\nInstalled All Packages, Starting Pynex...""")
-				return os.system(get_command("python") + " ./Boot/login.py")
+\n\nInstalling Packages...""")
+					for content in file.readlines():
+						ps = run(get_command("pip") + f" install {content}", stdout=PIPE, stderr=STDOUT, shell=True, text=True)
+					os.system(get_command("clear"))
+					print("""
+    ____                       
+   / __ \__  ______  ___  _  __
+  / /_/ / / / / __ \/ _ \| |/_/
+ / ____/ /_/ / / / /  __/>  <  
+/_/    \__, /_/ /_/\___/_/|_|  
+      /____/                   
+\n\nInstalled All Packages, Running Pynex...""")
+					sleep(3)
+					os.system(get_command("clear"))
+					return os.system(get_command("python") + " " + path + " /Boot/login.py")
+		except Exception as e:
+			print(e)
+			return
 
 clear()
 boot()
